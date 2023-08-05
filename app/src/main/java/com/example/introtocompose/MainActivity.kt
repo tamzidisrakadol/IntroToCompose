@@ -1,6 +1,7 @@
 package com.example.introtocompose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -22,8 +23,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,16 +41,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.introtocompose.ui.theme.IntroToComposeTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            previewItem()
+           LaunchedEffectComposable()
         }
     }
 }
 
+
+//text in compose
 @Composable
 fun sayCheeze(name:String="Cheezzy "){
     Text(text = "hello $name",
@@ -59,7 +66,7 @@ fun sayCheeze(name:String="Cheezzy "){
 }
 
 
-
+//image in compose
 @Composable
 private fun previewImage(){
     Image(painter = painterResource(id = R.drawable.mobil),
@@ -69,6 +76,8 @@ private fun previewImage(){
     )
 }
 
+
+//button with click in compose
 @Composable
 private fun btnfunc(){
 
@@ -84,7 +93,7 @@ private fun btnfunc(){
 }
 
 
-
+//edittext in compose
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TextPrev(){
@@ -103,7 +112,7 @@ private fun TextPrev(){
 }
 
 
-
+//row and col in compose
 @Composable
 private fun rowAndColPrev(){
     Column(
@@ -122,6 +131,9 @@ private fun rowAndColPrev(){
     }
 }
 
+
+
+//list in compose
 @Preview(showBackground = true, widthDp = 300, heightDp = 500)
 @Composable
 private fun listView(){
@@ -142,6 +154,8 @@ private fun listView(){
     }
 }
 
+
+//modifier in compose
 @Preview(showBackground = true, widthDp = 300, heightDp = 500)
 @Composable
 private fun modifyFun(){
@@ -158,7 +172,7 @@ private fun modifyFun(){
 }
 
 
-
+//circular image in jetpack
 @Composable
 private fun circularImage(){
     Image(painter = painterResource(id = R.drawable.mobil),
@@ -169,4 +183,55 @@ private fun circularImage(){
             .clip(CircleShape)
             .border(2.dp, Color.Black, CircleShape))
 }
+
+//side effects in compose
+//if we need any function to execute only one time we can use launchedEffect(_)
+
+@Composable
+private fun Counter(){
+    var counter = remember{ mutableStateOf(0) }
+    var key = counter.value%3==0  // it will change the value of key
+    LaunchedEffect(key1 = key,){  //it will run for only 1 time unless the value of is key is changed
+        Log.d("count","${counter.value}")
+    }
+    Button(onClick = { counter.value++ }) {
+        Text(text = "increment")
+    }
+}
+
+
+
+//remember coroutineScope
+@Composable
+private fun LaunchedEffectComposable(){
+    var count= remember {
+        mutableStateOf(0)
+    }
+
+    var scope = rememberCoroutineScope()  // it can only use in launchedEffect or event like button
+
+    LaunchedEffect(key1 = Unit){
+        scope.launch {
+            Log.d("count","Started")
+            try {
+                for (i in 1..10){
+                    count.value++
+                    delay(1000)
+                }
+            }catch (e:Exception){
+                Log.d("count", e.toString())
+            }
+        }
+    }
+    
+
+    var text = "counter is running ${count.value}"
+    if (count.value==10){
+        text="Counter stopped"
+    }
+
+    Text(text = text)
+}
+
+
 
