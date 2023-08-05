@@ -23,10 +23,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-           LaunchedEffectComposable()
+           DisposableExample()
         }
     }
 }
@@ -231,6 +233,52 @@ private fun LaunchedEffectComposable(){
     }
 
     Text(text = text)
+}
+
+//RememberUpdateState
+@Composable
+private fun App(){
+    var count= remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(key1 = Unit){
+        delay(2000)
+        count.value=10
+    }
+    Counter(value = count.value)
+}
+
+@Composable
+private fun Counter(value:Int){
+    val state = rememberUpdatedState(newValue = value) //it will remember the value of updated state
+    LaunchedEffect(key1 = Unit){
+        delay(5000)
+        Log.d("count",state.value.toString())
+    }
+
+    Text(text = value.toString())
+}
+
+
+//DISPOSABLE EFFECT
+@Composable
+private fun DisposableExample(){
+    var state= remember {
+        mutableStateOf(false)
+    }
+
+    DisposableEffect(key1 = state.value,){
+        Log.d("count","Disposable effect started")
+        onDispose {
+            Log.d("count","Cleaning up items")
+        }
+    }
+
+    Button(onClick = {
+        state.value=!state.value
+    }) {
+        Text(text = "changeState")
+    }
 }
 
 
