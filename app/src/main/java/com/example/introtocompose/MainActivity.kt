@@ -1,6 +1,7 @@
 package com.example.introtocompose
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -38,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -50,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.introtocompose.ui.theme.IntroToComposeTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -60,12 +58,44 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            showDatePicker(context = this)
+            showTimePicker(context = this)
         }
     }
 }
 
-//open datepicker dialouge
+//open time picker dialog
+@Composable
+private fun showTimePicker(context: Context) {
+    val calendar = Calendar.getInstance()
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
+
+    val time = remember {
+        mutableStateOf("")
+    }
+
+    val timePickerDialog = TimePickerDialog(context ,
+        {_,hour:Int,minute:Int ->
+            time.value ="$hour : $minute"
+        },hour,minute,false)
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Selected Date: ${time.value}")
+        Spacer(modifier = Modifier.size(16.dp))
+        Button(onClick = {
+            timePickerDialog.show()
+        }) {
+            Text(text = "Select Time")
+        }
+    }
+}
+
+//open date picker dialog
 @Composable
 private fun showDatePicker(context: Context) {
     val calendar = Calendar.getInstance()
