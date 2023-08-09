@@ -1,8 +1,11 @@
 package com.example.introtocompose
 
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewTreeObserver
+import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -12,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,14 +53,47 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.introtocompose.ui.theme.IntroToComposeTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-         KeyboardComposable()
-         TextField(value = "", onValueChange = {})
+            showDatePicker(context = this)
+        }
+    }
+}
+
+//open datepicker dialouge
+@Composable
+private fun showDatePicker(context: Context) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val date = remember {
+        mutableStateOf("")
+    }
+
+    val datePickerDialog = DatePickerDialog(context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            date.value = "$dayOfMonth / $month / $year"
+        }, year, month, dayOfMonth
+    )
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Selected Date: ${date.value}")
+        Spacer(modifier = Modifier.size(16.dp))
+        Button(onClick = {
+            datePickerDialog.show()
+        }) {
+            Text(text = "Select Date")
         }
     }
 }
