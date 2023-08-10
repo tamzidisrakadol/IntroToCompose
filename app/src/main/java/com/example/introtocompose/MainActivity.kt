@@ -14,17 +14,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -37,10 +45,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,10 +69,76 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            showTimePicker(context = this)
+            val painter = painterResource(id = R.drawable.car)
+            val description = "Luxurious Card"
+            val title = "F and F"
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(16.dp)
+            ) {
+                CardViewExample(painter = painter, contentDescription = description, title = title)
+            }
+
+
         }
     }
 }
+
+@Composable
+private fun CardViewExample(
+    painter: Painter,
+    contentDescription: String,
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+    ) {
+        Box(modifier = Modifier.height(200.dp)) {
+
+            Image(
+                painter = painter,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.Crop
+            )
+
+            //to add a extra color of layer in the end 
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Blue
+                            ),
+                            startY = 400f
+                        )
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                Text(
+                    text = title,
+                    style = TextStyle(color = Color.White),
+                    fontSize = 16.sp,
+                )
+            }
+        }
+    }
+}
+
 
 //open time picker dialog
 @Composable
@@ -75,10 +152,11 @@ private fun showTimePicker(context: Context) {
         mutableStateOf("")
     }
 
-    val timePickerDialog = TimePickerDialog(context ,
-        {_,hour:Int,minute:Int ->
-            time.value ="$hour : $minute"
-        },hour,minute,false)
+    val timePickerDialog = TimePickerDialog(context,
+        { _, hour: Int, minute: Int ->
+            time.value = "$hour : $minute"
+        }, hour, minute, false
+    )
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -107,7 +185,8 @@ private fun showDatePicker(context: Context) {
         mutableStateOf("")
     }
 
-    val datePickerDialog = DatePickerDialog(context,
+    val datePickerDialog = DatePickerDialog(
+        context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             date.value = "$dayOfMonth / $month / $year"
         }, year, month, dayOfMonth
