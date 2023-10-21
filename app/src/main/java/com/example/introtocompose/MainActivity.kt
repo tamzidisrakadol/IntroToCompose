@@ -16,23 +16,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -45,12 +44,15 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -63,28 +65,84 @@ import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import kotlin.random.Random
+
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val painter = painterResource(id = R.drawable.car)
-            val description = "Luxurious Card"
-            val title = "F and F"
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(16.dp)
-            ) {
-                CardViewExample(painter = painter, contentDescription = description, title = title)
-            }
-
-
+            MainScreen()
         }
     }
 }
+
+@Composable
+fun TextComponent(textvalue: String, shadowColor: Color) {
+    val shadowOffset = Offset(x = -40f, y = 4f)
+    Text(
+        text = textvalue,
+        modifier = Modifier
+            .width(80.dp)
+            .height(80.dp)
+            .background(Color.LightGray)
+            .padding(horizontal = 18.dp, vertical = 28.dp),
+
+        fontSize = 20.sp,
+        fontStyle = FontStyle.Normal,
+        color = Color.Black,
+        style = TextStyle(
+            fontSize = 24.sp,
+            fontStyle = FontStyle.Normal,
+            shadow = Shadow(shadowColor, shadowOffset, 2f)
+        )
+    )
+}
+
+
+@Composable
+fun EvenNumber() {
+    for (number in 1..10) {
+        if (number % 2 ==0) {
+            val color = Color(
+                red = Random.nextInt(256),
+                green = Random.nextInt(256),
+                blue = Random.nextInt(256)
+            )
+            TextComponent(textvalue = number.toString(), shadowColor = color)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun MainScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(Color.White)
+    ) {
+       EvenNumber()
+        Row {
+            EvenNumber()
+        }
+    }
+}
+
+// ** add those file in onCreate to see the result **//
+//val painter = painterResource(id = R.drawable.car)
+//val description = "Luxurious Card"
+//val title = "F and F"
+//
+//Box(
+//modifier = Modifier
+//.fillMaxWidth(0.5f)
+//.padding(16.dp)
+//) {
+//    CardViewExample(painter = painter, contentDescription = description, title = title)
+//}
 
 @Composable
 private fun CardViewExample(
@@ -108,7 +166,7 @@ private fun CardViewExample(
                 contentScale = ContentScale.Crop
             )
 
-            //to add a extra color of layer in the end 
+            //to add a extra color of layer in the end
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -152,7 +210,8 @@ private fun showTimePicker(context: Context) {
         mutableStateOf("")
     }
 
-    val timePickerDialog = TimePickerDialog(context,
+    val timePickerDialog = TimePickerDialog(
+        context,
         { _, hour: Int, minute: Int ->
             time.value = "$hour : $minute"
         }, hour, minute, false
@@ -294,7 +353,7 @@ private fun rowAndColPrev() {
 
 
 //list in compose
-@Preview(showBackground = true, widthDp = 300, heightDp = 500)
+
 @Composable
 private fun listView() {
     Row(Modifier.padding(8.dp)) {
@@ -319,7 +378,7 @@ private fun listView() {
 
 
 //modifier in compose
-@Preview(showBackground = true, widthDp = 300, heightDp = 500)
+
 @Composable
 private fun modifyFun() {
     Text(text = "Modifier",

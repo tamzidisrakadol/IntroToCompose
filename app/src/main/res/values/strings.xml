@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">IntroToCompose</string>
+    <string name="welcome_msg">Welcome to JetPack Compose</string>
 </resources>
