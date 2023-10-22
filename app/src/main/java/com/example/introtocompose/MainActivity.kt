@@ -32,6 +32,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -64,6 +65,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.introtocompose.screens.QuoteDetail
 import com.example.introtocompose.screens.QuoteListItem
+import com.example.introtocompose.screens.QuoteListScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -74,11 +78,44 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.IO).launch {
+            DataManager.loadAssetFromFile(applicationContext)
+        }
         setContent {
-            QuoteListItem()
+            AppQuoteScreen()
         }
     }
 }
+@Preview
+@Composable
+fun AppQuoteScreen(){
+    if(DataManager.isDataLoaded.value){
+        QuoteListScreen(data = DataManager.data) {
+            
+        }
+        
+    }else{
+        Box(contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize(1f)
+        ){
+            Text(text = "Loading",
+                style = MaterialTheme.typography.headlineSmall
+            )
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun TextComponent(textvalue: String, shadowColor: Color) {
@@ -117,7 +154,7 @@ fun EvenNumber() {
     }
 }
 
-@Preview
+
 @Composable
 fun MainScreen() {
     Column(
