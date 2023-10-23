@@ -86,12 +86,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
+enum class ShowPages{
+    LISTING,
+    DETAILS
+}
+
+
 @Preview
 @Composable
 fun AppQuoteScreen(){
     if(DataManager.isDataLoaded.value){
-        QuoteListScreen(data = DataManager.data) {
-            
+        if (DataManager.currentPage.value ==ShowPages.LISTING){
+            QuoteListScreen(data = DataManager.data) {
+                DataManager.switchPages(it)
+            }
+        }else{
+            DataManager.currentQuote?.let {
+                QuoteDetail(quote = it)
+            }
         }
         
     }else{

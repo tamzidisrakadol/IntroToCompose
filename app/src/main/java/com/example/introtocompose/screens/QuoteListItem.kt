@@ -33,14 +33,14 @@ import com.example.introtocompose.model.Quote
 
 
 @Composable
-fun QuoteListItem(quote: Quote, onClick:()->Unit) {
+fun QuoteListItem(quote: Quote, onClick:(quote:Quote)->Unit) {
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
         modifier = Modifier.padding(8.dp)
             .clickable {
-                onClick
+                onClick(quote)
             }
     ) {
         Row(

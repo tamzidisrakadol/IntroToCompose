@@ -1,5 +1,6 @@
 package com.example.introtocompose.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +26,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.introtocompose.DataManager
 import com.example.introtocompose.model.Quote
 
 
 @Composable
-fun QuoteDetail(quote:Quote) {
+fun QuoteDetail(quote: Quote) {
+
+    BackHandler {
+        DataManager.switchPages(null)
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -55,7 +62,8 @@ fun QuoteDetail(quote:Quote) {
                     .align(Alignment.CenterHorizontally)
                     .padding(16.dp, 24.dp)
             ) {
-                Image(imageVector = Icons.Filled.FormatQuote,
+                Image(
+                    imageVector = Icons.Filled.FormatQuote,
                     contentDescription = "Quote",
                     modifier = Modifier
                         .size(80.dp)
@@ -69,7 +77,7 @@ fun QuoteDetail(quote:Quote) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text =quote.author,
+                    text = quote.author ?: "Unknown Author",
                     fontFamily = FontFamily.SansSerif,
                     style = MaterialTheme.typography.titleSmall
                 )
