@@ -88,12 +88,14 @@ class MainActivity : ComponentActivity() {
 }
 
 
+
+
 enum class ShowPages{
     LISTING,
     DETAILS
 }
 
-
+//Quote ui
 @Preview
 @Composable
 fun AppQuoteScreen(){
