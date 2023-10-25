@@ -13,9 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.introtocompose.Components.CheckboxComponent
 import com.example.introtocompose.Components.HeaderTextComponent
 import com.example.introtocompose.Components.NameTextField
 import com.example.introtocompose.Components.NormalTextComponent
+import com.example.introtocompose.Components.PasswordTextField
 import com.example.introtocompose.R
 
 
@@ -36,9 +38,10 @@ fun SignUpScreen() {
             Spacer(modifier = Modifier.height(20.dp))
 
             NameTextField(value = "Name", painter = painterResource(id = R.drawable.person))
-            NameTextField(value = "Name", painter = painterResource(id = R.drawable.email))
-            NameTextField(value = "Name", painter = painterResource(id = R.drawable.baseline_local_phone_24))
-            NameTextField(value = "Name", painter = painterResource(id = R.drawable.pass))
+            NameTextField(value = "Email", painter = painterResource(id = R.drawable.email))
+            NameTextField(value = "phone", painter = painterResource(id = R.drawable.baseline_local_phone_24))
+            PasswordTextField(value = "Password", painter = painterResource(id = R.drawable.pass) )
+            CheckboxComponent(value = "By continuing you accept our Privacy Policy and Terms and Condition")
 
         }
 
