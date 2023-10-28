@@ -67,6 +67,7 @@ import com.example.introtocompose.app.PostOffice
 import com.example.introtocompose.screens.QuoteDetail
 import com.example.introtocompose.screens.QuoteListItem
 import com.example.introtocompose.screens.QuoteListScreen
+import com.example.introtocompose.screens.TipCalculatorScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -79,11 +80,13 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         CoroutineScope(Dispatchers.IO).launch {
             DataManager.loadAssetFromFile(applicationContext)
         }
+
         setContent {
-            PostOffice()
+            TipCalculatorScreen()
         }
     }
 }
