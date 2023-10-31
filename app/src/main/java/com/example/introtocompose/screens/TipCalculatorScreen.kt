@@ -1,5 +1,6 @@
 package com.example.introtocompose.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview(showSystemUi = true)
 @Composable
 fun TipCalculatorScreen() {
@@ -90,6 +90,18 @@ fun TopHeader(totalPerPerson: Double = 134.0) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MainContent() {
+    BillForm(){
+        Log.d("bill","${it.toInt()*100}")
+    }
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun BillForm(
+    modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit = {}
+) {
     val totalBillState = remember {
         mutableStateOf("")
     }
@@ -111,19 +123,18 @@ fun MainContent() {
         Column(
             modifier = Modifier.padding(5.dp)
         ) {
-            InputFields(valueState = totalBillState, labelId = "Enter Total Bill" , enabled =true , isSingleLine = true,
+            InputFields(valueState = totalBillState,
+                labelId = "Enter Total Bill",
+                enabled = true,
+                isSingleLine = true,
                 onAction = KeyboardActions {
-                if (validState) return@KeyboardActions
+                    if (!validState) return@KeyboardActions
+                    onValueChange(totalBillState.value.trim())
                     keyBoardController?.hide()
-            })
+                })
         }
     }
 }
-
-
-
-
-
 
 
 //all components
@@ -148,8 +159,13 @@ fun InputFields(
         leadingIcon = { Icon(imageVector = Icons.Rounded.AttachMoney, contentDescription = "") },
         singleLine = isSingleLine,
         textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = modifier.padding(10.dp).fillMaxWidth(),
+        modifier = modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
         enabled = enabled,
-        keyboardOptions = KeyboardOptions(keyboardType=keyboardType, imeAction = imeAction)
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        keyboardActions = onAction
+
     )
 }
+
