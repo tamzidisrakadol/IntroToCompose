@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -111,7 +113,7 @@ fun MainContent() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BillForm(
-    modifier: Modifier = Modifier,
+    modify: Modifier = Modifier,
     onValueChange: (String) -> Unit = {}
 ) {
     val totalBillState = remember {
@@ -121,6 +123,10 @@ fun BillForm(
     //checking the input field is empty or not
     val validState = remember(totalBillState.value) {
         totalBillState.value.trim().isNotEmpty()
+    }
+
+    val sliderPositionState = remember {
+        mutableStateOf(0f)
     }
 
     val keyBoardController = LocalSoftwareKeyboardController.current
@@ -153,7 +159,10 @@ fun BillForm(
                 ) {
                     Text(
                         text = "Spilt",
-                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                        modifier = Modifier.align(alignment = Alignment.CenterVertically),
+                        style = TextStyle(
+                            fontSize = 20.sp
+                        )
                     )
                     Spacer(modifier = Modifier.width(120.dp))
                     Row(
@@ -162,10 +171,58 @@ fun BillForm(
                         verticalAlignment = Alignment.CenterVertically
 
                     ) {
-                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = {  })
-                        Text(text = "2", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),modifier = Modifier.padding(start = 9.dp, end = 8.dp))
-                        RoundIconButton(imageVector = Icons.Default.Add, onClick = {  })
+                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { })
+                        Text(
+                            text = "2",
+                            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                            modifier = Modifier.padding(start = 9.dp, end = 8.dp)
+                        )
+                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { })
                     }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(modifier = modify.padding(horizontal = 5.dp)) {
+                    Text(
+                        text = "Tip",
+                        modifier = modify.align(alignment = Alignment.CenterVertically),
+                        style = TextStyle(
+                            fontSize = 20.sp
+                        )
+                    )
+                    Spacer(modifier = modify.width(180.dp))
+                    Text(
+                        text = "33.00", style = TextStyle(
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "33%", modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentSize(Alignment.Center),
+                        style = TextStyle(
+                            fontSize = 20.sp
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Slider(
+                        value = sliderPositionState.value,
+                        onValueChange = {
+                            sliderPositionState.value = it
+                        },
+                        modifier = modify.padding(start = 16.dp, end = 16.dp),
+                        steps = 5,
+                        onValueChangeFinished = {
+
+                        }
+                    )
+
                 }
             }
         }
@@ -206,9 +263,8 @@ fun InputFields(
 }
 
 
+val iconButtonSizeModifier = Modifier.size(30.dp)
 
-
-val iconButtonSizeModifier = Modifier.size(40.dp)
 @Composable
 fun RoundIconButton(
     modifier: Modifier = Modifier,
@@ -232,7 +288,12 @@ fun RoundIconButton(
             defaultElevation = cardElevation
         ),
 
-    ) {
-        Icon(imageVector = imageVector, contentDescription = "", tint = tint, modifier = Modifier.size(40.dp))
+        ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = "",
+            tint = tint,
+            modifier = Modifier.size(30.dp)
+        )
     }
 }
