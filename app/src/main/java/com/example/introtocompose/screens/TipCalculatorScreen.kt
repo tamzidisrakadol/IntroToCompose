@@ -57,7 +57,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun TipCalculatorScreen() {
     Surface {
-        Column {
+        Column(
+            modifier = Modifier.padding(15.dp)
+        ) {
             TopHeader()
             Spacer(modifier = Modifier.height(10.dp))
             MainContent()
@@ -128,6 +130,16 @@ fun BillForm(
     val sliderPositionState = remember {
         mutableStateOf(0f)
     }
+    val tipPercentage = (sliderPositionState.value*100).toInt()
+
+    val splitByState = remember {
+        mutableStateOf(1)
+    }
+
+    val spiltRange = IntRange(start = 1, endInclusive = 100)
+    val tipAmountState = remember {
+        mutableStateOf(0.0)
+    }
 
     val keyBoardController = LocalSoftwareKeyboardController.current
 
@@ -135,7 +147,7 @@ fun BillForm(
         modifier = Modifier
             .padding(2.dp)
             .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp))),
+            .clip(shape = RoundedCornerShape(corner = CornerSize(15.dp))),
         border = BorderStroke(width = 1.dp, color = Color.LightGray)
     ) {
         Column(
@@ -165,19 +177,32 @@ fun BillForm(
                         )
                     )
                     Spacer(modifier = Modifier.width(120.dp))
+
+                    //negative value
                     Row(
                         modifier = Modifier.padding(horizontal = 3.dp),
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
 
                     ) {
-                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { })
+                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = {
+                            splitByState.value =
+                                if (splitByState.value > 1)
+                                    splitByState.value - 1
+                                else 1
+                        })
                         Text(
-                            text = "2",
+                            text = "${splitByState.value}",
                             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                             modifier = Modifier.padding(start = 9.dp, end = 8.dp)
                         )
-                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { })
+
+                        //positive value
+                        RoundIconButton(imageVector = Icons.Default.Add, onClick = {
+                            if (splitByState.value < spiltRange.last){
+                                splitByState.value=splitByState.value + 1
+                            }
+                        })
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -192,18 +217,19 @@ fun BillForm(
                     )
                     Spacer(modifier = modify.width(180.dp))
                     Text(
-                        text = "33.00", style = TextStyle(
+                        text = "${tipAmountState.value}", style = TextStyle(
                             fontSize = 20.sp
                         )
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
+                //SLIDER
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "33%", modifier = Modifier
+                        text = "$tipPercentage%", modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center),
                         style = TextStyle(
@@ -215,9 +241,10 @@ fun BillForm(
                         value = sliderPositionState.value,
                         onValueChange = {
                             sliderPositionState.value = it
+                            tipAmountState.value = calculateTotalTip(totalBill = totalBillState.value.toDouble(), tipPercentage =  tipPercentage)
                         },
                         modifier = modify.padding(start = 16.dp, end = 16.dp),
-                        steps = 5,
+ //                       steps = 5,
                         onValueChangeFinished = {
 
                         }
@@ -226,6 +253,14 @@ fun BillForm(
                 }
             }
         }
+    }
+}
+
+fun calculateTotalTip(totalBill:Double,tipPercentage:Int):Double{
+    return if (totalBill > 1 && totalBill.toString().isNotEmpty()){
+        (totalBill * tipPercentage)/100
+    }else{
+        0.0
     }
 }
 
