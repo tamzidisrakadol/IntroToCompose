@@ -56,12 +56,11 @@ import androidx.compose.ui.unit.sp
 @Preview(showSystemUi = true)
 @Composable
 fun TipCalculatorScreen() {
+    
     Surface {
         Column(
             modifier = Modifier.padding(15.dp)
         ) {
-            TopHeader()
-            Spacer(modifier = Modifier.height(10.dp))
             MainContent()
         }
     }
@@ -69,7 +68,7 @@ fun TipCalculatorScreen() {
 
 
 @Composable
-fun TopHeader(totalPerPerson: Double = 134.0) {
+fun TopHeader(totalPerPerson: Double) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,6 +139,9 @@ fun BillForm(
     val tipAmountState = remember {
         mutableStateOf(0.0)
     }
+    val totalPerPersonState= remember {
+        mutableStateOf(0.0)
+    }
 
     val keyBoardController = LocalSoftwareKeyboardController.current
 
@@ -155,6 +157,8 @@ fun BillForm(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
+            TopHeader(totalPerPersonState.value)
+            Spacer(modifier = Modifier.height(10.dp))
             InputFields(valueState = totalBillState,
                 labelId = "Enter Total Bill",
                 enabled = true,
@@ -217,7 +221,7 @@ fun BillForm(
                     )
                     Spacer(modifier = modify.width(180.dp))
                     Text(
-                        text = "${tipAmountState.value}", style = TextStyle(
+                        text = "$ ${tipAmountState.value}", style = TextStyle(
                             fontSize = 20.sp
                         )
                     )
@@ -242,6 +246,7 @@ fun BillForm(
                         onValueChange = {
                             sliderPositionState.value = it
                             tipAmountState.value = calculateTotalTip(totalBill = totalBillState.value.toDouble(), tipPercentage =  tipPercentage)
+                            totalPerPersonState.value= calculateTotalPerPerson(totalBillState.value.toDouble(),splitByState.value,tipPercentage)
                         },
                         modifier = modify.padding(start = 16.dp, end = 16.dp),
  //                       steps = 5,
@@ -262,6 +267,11 @@ fun calculateTotalTip(totalBill:Double,tipPercentage:Int):Double{
     }else{
         0.0
     }
+}
+
+fun calculateTotalPerPerson(totalBill: Double,spiltBy:Int,tipPercentage:Int):Double{
+    val bill = calculateTotalTip(totalBill,tipPercentage)+totalBill
+    return (bill/spiltBy)
 }
 
 
