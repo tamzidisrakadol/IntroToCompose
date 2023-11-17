@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.introtocompose.Components.PickImageFromGallery
 import com.example.introtocompose.app.PostOffice
 import com.example.introtocompose.screens.QuoteDetail
 import com.example.introtocompose.screens.QuoteListItem
@@ -81,21 +82,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            DataManager.loadAssetFromFile(applicationContext)
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            DataManager.loadAssetFromFile(applicationContext)
+//        }
 
         setContent {
-            TipCalculatorScreen()
+            PickImageFromGallery()
         }
     }
 }
-
-
-
-
-
-
 
 
 //Quote ui
@@ -130,16 +125,6 @@ fun AppQuoteScreen(){
     }
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 @Composable
