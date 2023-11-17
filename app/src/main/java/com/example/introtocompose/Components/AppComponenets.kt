@@ -8,11 +8,13 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -271,18 +273,44 @@ fun PickImageFromGallery() {
             Text(text = "Pick Images from Gallery")
         }
         Spacer(modifier = Modifier.height(20.dp))
-    }
 
-    imgUri?.let {
-        bitmap = if (Build.VERSION.SDK_INT<28){
-            MediaStore.Images.Media.getBitmap(context.contentResolver,it)
-        }else{
-            val source = ImageDecoder.createSource(context.contentResolver,it)
-            ImageDecoder.decodeBitmap(source)
+        imgUri?.let {
+            bitmap = if (Build.VERSION.SDK_INT<28){
+                MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+            }else{
+                val source = ImageDecoder.createSource(context.contentResolver,it)
+                ImageDecoder.decodeBitmap(source)
+            }
+            Image(bitmap = bitmap?.asImageBitmap()!!, contentDescription ="", modifier = Modifier.size(300.dp))
         }
-        Image(bitmap = bitmap?.asImageBitmap()!!, contentDescription ="", modifier = Modifier.size(200.dp))
+    }
+}
+
+
+@Composable
+fun PickUpImageFromCamera(){
+    var bitmap by remember {
+        mutableStateOf<Bitmap?>(null)
     }
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()){
+        bitmap = it
+    }
 
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Button(onClick = { launcher.launch() }) {
+            Text(text = "Pick Image from Camera")
+        }
+        Spacer(modifier = Modifier.height(25.dp))
+        bitmap?.let{
+            Image(bitmap = bitmap?.asImageBitmap()!!, contentDescription ="", modifier = Modifier.size(300.dp))
+        }
+    }
 }
